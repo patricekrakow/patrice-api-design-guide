@@ -114,7 +114,7 @@ Of course, things are not that simple, because you will have to decide what you 
 
 Let's now summarize all our findings, first when there is a **unique** implicit relation between the `thingies` and the `gizmos`, and then when we name explicitly the relation, as `contract` in our exmaple, in order to welcome other (types of) relation.
 
-### Implicit Unique Relation
+### One Implicit Unique Relation
 
 * `post /thingies` ~ Create a `thingy`
 * `post /gizmos` ~ Create a `gizmo`
@@ -141,7 +141,7 @@ Let's now summarize all our findings, first when there is a **unique** implicit 
 * `delete /thingies/{thingyId}` ~ Delete a specific `thingy`
 * `delete /gizmos/{gizmoId}` ~ Delete a specific `gizmo`
 
-### Explicit Relation Amongst Others
+### One Explicit Relation Amongst Other Possible Relations
 
 * `post /thingies` ~ Create a `thingy`
 * `post /gizmos` ~ Create a `gizmo`
