@@ -1,171 +1,210 @@
 ## How to represent a many-to-many relationship with REST API endpoints
 
-Let's say that we have `thingies` and `gizmos` that have a **many-to-many** relationship.
-We can start representing the *reading side* of such a situation with the following API endpoints:
+### One Implicit Single Relation
 
-* `get /thingies` ~ Get the list of all `thingies`
-* `get /thingies/{thingyId}` ~ Get detailed information about a specific `thingy`
-* `get /thingies/{thingyId}/gizmos` ~ Get the list of `gizmos` *that are linked to* a specific `thingy`
-* `get /gizmos` ~ Get the list of all `gizmos`
-* `get /gizmos/{gizmoId}` ~ Get detailed information about a specific `gizmo`
-* `get /gizmos/{gizmoId}/thingies` ~ Get the list of `thingies` *that are linked to* a specific `gizmo`
+Let's say that we have the two concept `thingy` and `gizmo` that have one implicit single **many-to-many** relationship.
 
-The text "that are linked to" is the most generic expression I could think about. In real cases, you SHOULD replace it with a domain specific expression such as "of", "for", "owned by", "that belongs to", "that are used by", ...
+We can start representing the **_reading side_** of such a situation with the following API endpoints:
+
+* `get /thingies` lists all `thingies`
+* `get /thingies/{thingyId}` gets the details of a specific `thingy`
+* `get /thingies/{thingyId}/gizmos` lists the `gizmos` that have an implicit single relation with a specific `thingy`
+* `get /gizmos` lists all `gizmos`
+* `get /gizmos/{gizmoId}` gets the details of a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies` lists the `thingies` that have an implicit single relation with a specific `gizmo`
 
 You may ask why I did not put the following API endpoints:
 
 * `get /thingies/{thingyId}/gizmos/{gizmoId}`
 * `get /gizmos/{gizmoId}/thingies/{thingyId}`
 
-I do think we SHOULD avoid them. The `gizmoId` MUST (uniquely) identified a specific `gizmo` across all past, present and future `thingies`, so it not necessary (i.e. stupid) to specify a particular `thingy` to retrieve a specific `gizmo`. The symmetric argument is of course also valid: the `thingyId` MUST (uniquely) identified a specific `thingy` across all past, present and future `gizmos`, so it not necessary (i.e. stupid) to specify a particular `gizmo` to retrieve a specific `thingy`.
+I do think we SHOULD avoid them. The `gizmoId` MUST (uniquely) identified a specific `gizmo` across all past, present and future `thingies`, so it is not necessary (i.e. stupid) to specify a particular `thingy` to retrieve a specific `gizmo`. The symmetric argument is of course also valid: the `thingyId` MUST (uniquely) identified a specific `thingy` across all past, present and future `gizmos`, so it is not necessary (i.e. stupid) to specify a particular `gizmo` to retrieve a specific `thingy`.
 
-On the *creation side*, we could have
+On the **_creation side_**, we have:
 
-* `post /thingies` ~ Create a `thingy`
-* `post /thingies/{thingyId}/gizmos` ~ Create a `gizmo` *that is linked to* a specific `thingy`
+* `post /thingies` creates a `thingy`
+* `post /thingies/{thingyId}/gizmos` creates a `gizmo` that has an implicit unique relation with a specific `thingy`
+* `post /gizmos` creates a `gizmo`
+* `post /gizmos/{gizmoId}/thingies` creates a `thingy` that has an implicit unique relation with a specific `gizmo`
+* `post /thingies/{thingyId}/gizmos/{gizmoId}` creates an implicit unique relation between a specific `thingy` and a specific `gizmo`
+* `post /gizmos/{gizmoId}/thingies/{thingyId}` creates an implicit unique relation between a specific `gizmo` and a specific `thingy`
 
-if a `gizmo` can also exist linked to **one** specific `thingy`. In this case, `thingies` and `gizmos` do not have a **many-to-many** relationship, but just a **one-to-many** relationship. We could also have a **many-to-one** relationship between `thingies` and `gizmos` that leads to the following API endpoints:
+Let's continue with the **_update side_** with the following API endpoints:
 
-* `post /gizmos` ~ Create a `gizmo`
-* `post /gizmos/{gizmoId}/thingies` ~ Create a `thingy` *that is linked to* a specific `gizmo`
+* `put /thingies/{thingyId}` updates a specific `thingy` using a full representation
+* `patch /thingies/{thingyId}` updates a specific `thingy` using a partial representation
+* `put /gizmos/{gizmoId}` updates a specific `gizmo` using a full representation
+* `patch /gizmos/{gizmoId}` updates a specific `gizmo` using a partial representation
 
-If `thingies` and `gizmos` do have a genuine **many-to-many** relationship, we could use the following API endpoints:
+In this case of an implicit unique relation, we will first suppose that the relation itself does not change, that it does not have any attributes. The relation between a specific `thingy` and a specific `gizmo` is there or not, but it cannot be updated.
 
-* `post /thingies` ~ Create a `thingy`
-* `post /gizmos` ~ Create a `gizmo`
-* `post /thingies/{thingyId}/gizmos/{gizmoId}` ~ Create a relation (link) between a specific `thingy` and a specific `gizmo`
-* `post /gizmos/{gizmoId}/thingies/{thingyId}` ~ Create a relation (link) between a specific `gzimo` and a specific `thingy`
+Finally, the **_delete side_** is quite straightforward:
 
-Let's continue with the *update side*. We, of course, MUST have the following API endpoints:
+* `delete /thingies/{thingyId}` deletes a specific `thingy`
+* `delete /gizmos/{gizmoId}` deletes a specific `gizmo`
+* `delete /thingies/{thingyId}/gizmos/{gizmoId}` delete the implicit unique relation between a specific `thingy` and a specific `gizmo`
+* `delete /gizmos/{gizmoId}/thingies/{thingyId}` delete the implicit unique relation between a specific `gizmo` and a specific `thingy`
 
-* `put /thingies/{thingyId}` ~ Update a specific `thingy` using a complete/full representation
-* `patch /thingies/{thingyId}` ~ Update a specific `thingy` using a partial representation
-* `put /gizmos/{gizmoId}` ~ Update a specific `thingy` using a complete/full representation
-* `patch /gizmos/{gizmoId}` ~ Update a specific `thingy` using a partial representation
+#### Summary of One Implicit Single Relation
 
-Moreover, in case of a genuine many-to-many relationship, we SHOULD also have:
+* `post /thingies` creates a `thingy`
+* `post /thingies/{thingyId}/gizmos` creates a `gizmo` that has an implicit unique relation with a specific `thingy`
+* `post /gizmos` creates a `gizmo`
+* `post /gizmos/{gizmoId}/thingies` creates a `thingy` that has an implicit unique relation with a specific `gizmo`
+* `post /thingies/{thingyId}/gizmos/{gizmoId}` creates an implicit unique relation between a specific `thingy` and a specific `gizmo`
+* `post /gizmos/{gizmoId}/thingies/{thingyId}` creates an implicit unique relation between a specific `gizmo` and a specific `thingy`
+* `get /thingies` lists all `thingies`
+* `get /thingies/{thingyId}` gets the details of a specific `thingy`
+* `get /thingies/{thingyId}/gizmos` lists the `gizmos` that have an implicit single relation with a specific `thingy`
+* `get /gizmos` lists all `gizmos`
+* `get /gizmos/{gizmoId}` gets the details of a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies` lists the `thingies` that have an implicit single relation with a specific `gizmo`
+* `put /thingies/{thingyId}` updates a specific `thingy` using a full representation
+* `patch /thingies/{thingyId}` updates a specific `thingy` using a partial representation
+* `put /gizmos/{gizmoId}` updates a specific `gizmo` using a full representation
+* `patch /gizmos/{gizmoId}` updates a specific `gizmo` using a partial representation
+* `delete /thingies/{thingyId}` deletes a specific `thingy`
+* `delete /gizmos/{gizmoId}` deletes a specific `gizmo`
+* `delete /thingies/{thingyId}/gizmos/{gizmoId}` delete the implicit unique relation between a specific `thingy` and a specific `gizmo`
+* `delete /gizmos/{gizmoId}/thingies/{thingyId}` delete the implicit unique relation between a specific `gizmo` and a specific `thingy`
 
-* `put /thingies/{thingyId}/gizmos/{gizmoId}` ~ Update the relation (link) between a specific `thingy` and a specific `gizmo` using a complete/full representation
-* `patch /thingies/{thingyId}/gizmos/{gizmoId}` ~ Update the relation (link) between a specific `thingy` and a specific `gizmo` using a partial representation
-* `put /gizmos/{gizmoId}/thingies/{thingyId}` ~ Update the relation (link) between a specific `gzimo` and a specific `thingy` using a complete/full representation
-* `patch /gizmos/{gizmoId}/thingies/{thingyId}` ~ Update the relation (link) between a specific `gzimo` and a specific `thingy` using a partial representation
+### One Explicit Single Relation
 
-which MIGHT work well if you have one (and only one) possible relation between `thingies` and `gizmos`, but what if we want to manage different (type of) relations between `thingies` and `gizmos`.
+Now, let's consider that we still have a single relation, but that this relation can change over time, can have some attributes which can change values over time. We will therefore represent it explicitly with the **singular** noun `relation`.
 
-Imagine that the two API endpoints creating a relation return a `relation` like the following:
+Therefore, the two API endpoints:
 
-* `post /thingies/{thingyId}/gizmos/{gizmoId}` returning `/relations/{relationId}`
-* `post /gizmos/{gizmoId}/thingies/{thingyId}` returning `/relations/{relationId}`
+* `post /thingies/{thingyId}/gizmos` creates a `gizmo` that has an implicit unique relation with a specific `thingy`
+* `post /gizmos/{gizmoId}/thingies` creates a `thingy` that has an implicit unique relation with a specific `gizmo`
 
-we can then have
+becomes a bit ambiguous since they are creating, for the first one, **both** a `gizmo` and its single relation with a specific `thingy` with some (implicit) default values, and for the second one, **both** a `thingy` and its single relation with a specific `gizmo` with some (implicit) default values.
 
-* `put /relations/{relationId}` ~ Update a relation (link) between a specific `thingy` and a specific `gizmo` using a complete/full representation
-* `patch /relations/{relationId}` ~ Update a relation (link) between a specific `thingy` and a specific `gizmo` using a partial representation
+It is therefore preferable to only use one of the following two API endpoints to explicitly create a unique relation between an existing `thingy` and an existing `gizmo`:
 
-But, it is not nice/common to have a *somehting*, a `relation` in this case, created via `post` on a URL containing some words, and updated via `put` and `patch` on a URL containing other words! So, what about having only one API enpoint to creation a `relation`:
+* `post /thingies/{thingyId}/gizmos/{gizmoId}/relation` creates a unique `relation` between a specific `thingy` and a specific `gizmo`
+* `post /gizmos/{gizmoId}/thingies/{thingyId}/relation` creates a unique `relation` between a specific `gizmo` and a specific `thingy`
 
-* `post /relations` returing `/relations/{relationId}`
+And, the **_reading side_** must now be completed with the two following API endpoints:
 
-or
+* `get /thingies/{thingyId}/gizmos/{gizmoId}/relation` gets the details of the single `relation` between a specific `thingy` and a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies/{thingyId}/relation` get the details of the single `relation` between a specific `gizmo` and a specific `thingy`
 
-* `post /thingies/{thingyId}/gizmos/{gizmoId}/relations` returning `/relations/{relationId}`
-* `post /gizmos/{gizmoId}/thingies/{thingyId}/relations` returning `/relations/{relationId}`
+While the **_update side_** must be completed accordingly:
 
-Finally, different types of relation might have quite different represenations: if you want to represent a contractual relation with a bank, you will use different fields. This is why I would recommend to use a specific noun representing the relation, such as `contract`:
+* `put /thingies/{thingyId}/gizmos/{gizmoId}/relation` updates the single `relation` between a specific `thingy` and a specific `gizmo`, using a full representation
+* `put /gizmos/{gizmoId}/thingies/{thingyId}/relation` updates the single `relation` between a specific `gizmo` and a specific `thingy`, using a full representation
+* `patch /thingies/{thingyId}/gizmos/{gizmoId}/relation` updates the single `relation` between a specific `thingy` and a specific `gizmo`, using a partial representation
+* `patch /gizmos/{gizmoId}/thingies/{thingyId}/relation` updates the single `relation` between a specific `gizmo` and a specific `thingy`, using a partial representation
 
-* `post /contracts` ~ Create a `contract` between a `thingy` and a `gizmo`
+Finally, the two API endpoints:
 
-or
+* `delete /thingies/{thingyId}/gizmos/{gizmoId}` delete the implicit single relation between a specific `thingy` and a specific `gizmo`
+* `delete /gizmos/{gizmoId}/thingies/{thingyId}` delete the implicit single relation between a specific `gizmo` and a specific `thingy`
+
+while they could still be used, are better replaced by:
+
+* `delete /thingies/{thingyId}/gizmos/{gizmoId}/relation` delete the single `relation` between a specific `thingy` and a specific `gizmo`
+* `delete /gizmos/{gizmoId}/thingies/{thingyId}/relation` delete the single `relation` between a specific `gizmo` and a specific `thingy`
+
+#### Summary of One Explicit Single Relation
+
+* `post /thingies` creates a `thingy`
+* `post /gizmos` creates a `gizmo`
+* `post /thingies/{thingyId}/gizmos/{gizmoId}/relation` creates a unique `relation` between a specific `thingy` and a specific `gizmo`
+* `post /gizmos/{gizmoId}/thingies/{thingyId}/relation` creates a unique `relation` between a specific `gizmo` and a specific `thingy`
+* `get /thingies` lists all `thingies`
+* `get /thingies/{thingyId}` gets the details of a specific `thingy`
+* `get /thingies/{thingyId}/gizmos` lists the `gizmos` that have an implicit single relation with a specific `thingy`
+* `get /gizmos` lists all `gizmos`
+* `get /gizmos/{gizmoId}` gets the details of a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies` lists the `thingies` that have an implicit single relation with a specific `gizmo`
+* `get /thingies/{thingyId}/gizmos/{gizmoId}/relation` gets the details of the single `relation` between a specific `thingy` and a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies/{thingyId}/relation` get the details of the single `relation` between a specific `gizmo` and a specific `thingy`
+* `put /thingies/{thingyId}` updates a specific `thingy` using a full representation
+* `patch /thingies/{thingyId}` updates a specific `thingy` using a partial representation
+* `put /gizmos/{gizmoId}` updates a specific `gizmo` using a full representation
+* `patch /gizmos/{gizmoId}` updates a specific `gizmo` using a partial representation
+* `put /thingies/{thingyId}/gizmos/{gizmoId}/relation` updates the single `relation` between a specific `thingy` and a specific `gizmo`, using a full representation
+* `put /gizmos/{gizmoId}/thingies/{thingyId}/relation` updates the single `relation` between a specific `gizmo` and a specific `thingy`, using a full representation
+* `patch /thingies/{thingyId}/gizmos/{gizmoId}/relation` updates the single `relation` between a specific `thingy` and a specific `gizmo`, using a partial representation
+* `patch /gizmos/{gizmoId}/thingies/{thingyId}/relation` updates the single `relation` between a specific `gizmo` and a specific `thingy`, using a partial representation
+* `delete /thingies/{thingyId}` deletes a specific `thingy`
+* `delete /gizmos/{gizmoId}` deletes a specific `gizmo`
+* `delete /thingies/{thingyId}/gizmos/{gizmoId}/relation` delete the single `relation` between a specific `thingy` and a specific `gizmo`
+* `delete /gizmos/{gizmoId}/thingies/{thingyId}/relation` delete the single `relation` between a specific `gizmo` and a specific `thingy`
+
+### Multiple Relations
+
+* `post /thingies/{thingyId}/gizmos/{gizmoId}/relations` creates a `relation` between a specific `thingy` and a specific `gizmo`
+* `post /gizmos/{gizmoId}/thingies/{thingyId}/relations` creates a `relation` between a specific `gizmo` and a specific `thingy`
+
+* `get /thingies/{thingyId}/gizmos/{gizmoId}/relations` lists the `relations` between a specific `thingy` and a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies/{thingyId}/relations` lists the `relations` between a specific `gizmo` and a specific `thingy`
+* `get /relations/{relationId}` gets the details of a specific `relation`
+* `get /relations` lists all `relations`
+
+* `put /relations/{relationId}` updates a specific `relation` using a full representation
+* `patch /relations/{relationId}` ~ updates a specific `relation` using a partial representation
+
+Finally, different types of relation might have quite different representations: if you want to represent a contractual relation with a bank, you will use different fields. This is why I would recommend to use a specific noun representing the relation, such as `contract`:
+
 
 * `post /thingies/{thingyId}/gizmos/{gizmoId}/contracts`
 
-The *update side* of these two posibilities are both completed by:
 
-* `put /contracts/{contractId}` ~ Update a specific contract between a `thingy` and a `gizmo` using a complete/full representation
-* `patch /contracts/{contractId}` ~ Update a specific contract between a `thingy` and a `gizmo` using a partial representation
+* `put /contracts/{contractId}` updates a specific `contract` between a `thingy` and a `gizmo` using a complete/full representation
+* `patch /contracts/{contractId}` updates a specific `contract` between a `thingy` and a `gizmo` using a partial representation
 
-We should now add the *reading side* of this relation of a specific type, the `contract`. We have the obvious ones:
-
-* `get /contracts` ~ Get the list of all `contracts`
-* `get /contracts/{contractId}` ~ Get detailed information about a specific `contract`
+* `get /contracts` lists all `contracts`
+* `get /contracts/{contractId}` gets the details of a specific `contract`
 
 But, we could also add the following API endpoints:
 
-* `get /thingies/{thingyId}/contracts` ~ Get the list of `contracts` that include a specific `thingy`
-* `get /gizmos/{gizmoId}/contracts` ~ Get the list of `contracts` that include a specific `gizmo`
-* `get /thingies/{thingyId}/gizmos/{gizmoId}/contracts` ~ Get the list of `contracts` that include a specific `thingy` and a specific `gizmo`
-* `get /gizmos/{gizmoId}/thingies/{thingyId}/contracts` ~ Get the list of `contracts` that include a specific `gizmo` and a specific `thingy`
+* `get /thingies/{thingyId}/contracts` lists the `contracts` that include a specific `thingy`
+* `get /gizmos/{gizmoId}/contracts` lists the `contracts` that include a specific `gizmo`
+* `get /thingies/{thingyId}/gizmos/{gizmoId}/contracts` lists the `contracts` that include a specific `thingy` and a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies/{thingyId}/contracts` lists the `contracts` that include a specific `gizmo` and a specific `thingy`
 
 As well as the following API endpoints:
 
-* `get /contracts/{contractId}/thingies` ~ Get the list of `thingies` that are included in a specific `contract`
-* `get /contracts/{contractId}/gizmos` ~ Get the list of `gizmos` that are included in a specific `contract`
+* `get /contracts/{contractId}/thingies` lists the `thingies` that are included in a specific `contract`
+* `get /contracts/{contractId}/gizmos` lists the `gizmos` that are included in a specific `contract`
 
 Finally, the *delete side* is quite straightforward:
 
-* `delete /thingies/{thingyId}` ~ Delete a specific `thingy`
-* `delete /gizmos/{gizmoId}` ~ Delete a specific `gizmo`
-* `delete /contracts/{contractId}` ~ Delete a specific `contract`
+* `delete /thingies/{thingyId}` deletes a specific `thingy`
+* `delete /gizmos/{gizmoId}` deletes a specific `gizmo`
+* `delete /contracts/{contractId}` deletes a specific `contract`
 
 Of course, things are not that simple, because you will have to decide what you do with the **orphan** `contracts` when you delete a `thingy` or a `gizmo`:
 * It can be forbidden to delete a `thingy` or a `gizmo` before deleting all related `contracts`
 * Your implementation can *cascade* the delete to all `contracts`
 * You may just be happy with orphan `contracts`
 
-Let's now summarize all our findings, first when there is a **unique** implicit relation between the `thingies` and the `gizmos`, and then when we name explicitly the relation, as `contract` in our exmaple, in order to welcome other (types of) relation.
+### Summary of multiple named relations
 
-### One Implicit Unique Relation
-
-* `post /thingies` ~ Create a `thingy`
-* `post /gizmos` ~ Create a `gizmo`
-* `post /thingies/{thingyId}/gizmos/{gizmoId}` ~ Create the relation (link) between a specific `thingy` and a specific `gizmo`
-* `post /gizmos/{gizmoId}/thingies/{thingyId}` ~ Create the relation (link) between a specific `gzimo` and a specific `thingy`
-* `get /thingies` ~ Get the list of all `thingies`
-* `get /thingies/{thingyId}` ~ Get detailed information about a specific `thingy`
-* `get /thingies/{thingyId}/gizmos` ~ Get the list of `gizmos` *that are linked to* a specific `thingy`
-* `get /gizmos` ~ Get the list of all `gizmos`
-* `get /gizmos/{gizmoId}` ~ Get detailed information about a specific `gizmo`
-* `get /gizmos/{gizmoId}/thingies` ~ Get the list of `thingies` *that are linked to* a specific `gizmo`
-* `get /thingies/{thingyId}/gizmos/{gizmoId}` ~ Get detailed information about the relation (link) between a specific `thingy` and a specific `gizmo`
-* `get /gizmos/{gizmoId}/thingies/{thingyId}` ~ Get detailed information about the relation (link) between a specific `gizmo` and a specific `thingy`
-* `put /thingies/{thingyId}` ~ Update a specific `thingy` using a complete/full representation
-* `patch /thingies/{thingyId}` ~ Update a specific `thingy` using a partial representation
-* `put /gizmos/{gizmoId}` ~ Update a specific `thingy` using a complete/full representation
-* `patch /gizmos/{gizmoId}` ~ Update a specific `thingy` using a partial representation
-* `put /thingies/{thingyId}/gizmos/{gizmoId}` ~ Update the relation (link) between a specific `thingy` and a specific `gizmo` using a complete/full representation
-* `patch /thingies/{thingyId}/gizmos/{gizmoId}` ~ Update the relation (link) between a specific `thingy` and a specific `gizmo` using a partial representation
-* `put /gizmos/{gizmoId}/thingies/{thingyId}` ~ Update the relation (link) between a specific `gzimo` and a specific `thingy` using a complete/full representation
-* `patch /gizmos/{gizmoId}/thingies/{thingyId}` ~ Update the relation (link) between a specific `gzimo` and a specific `thingy` using a partial representation
-* `delete /thingies/{thingyId}/gizmos/{gizmoId}` ~ Delete the relation (link) between a specific `thingy` and a specific `gizmo`
-* `delete /gizmos/{gizmoId}/thingies/{thingyId}` ~ Delete the relation (link) between a specific `gzimo` and a specific `thingy`
-* `delete /thingies/{thingyId}` ~ Delete a specific `thingy`
-* `delete /gizmos/{gizmoId}` ~ Delete a specific `gizmo`
-
-### One Explicit Relation Amongst Other Possible Relations
-
-* `post /thingies` ~ Create a `thingy`
-* `post /gizmos` ~ Create a `gizmo`
-* `post /contracts` or `post /thingies/{thingyId}/gizmos/{gizmoId}/contracts` ~ Create a `contract` between a `thingy` and a `gizmo`
-* `get /thingies` ~ Get the list of all `thingies`
-* `get /thingies/{thingyId}` ~ Get detailed information about a specific `thingy`
-* `get /thingies/{thingyId}/gizmos` ~ Get the list of `gizmos` *that are linked to* a specific `thingy`
-* `get /gizmos` ~ Get the list of all `gizmos`
-* `get /gizmos/{gizmoId}` ~ Get detailed information about a specific `gizmo`
-* `get /gizmos/{gizmoId}/thingies` ~ Get the list of `thingies` *that are linked to* a specific `gizmo`
-* `get /contracts` ~ Get the list of all `contracts`
-* `get /contracts/{contractId}` ~ Get detailed information about a specific `contract`
-* `get /thingies/{thingyId}/contracts` ~ Get the list of `contracts` that include a specific `thingy`
-* `get /gizmos/{gizmoId}/contracts` ~ Get the list of `contracts` that include a specific `gizmo`
-* `get /thingies/{thingyId}/gizmos/{gizmoId}/contracts` ~ Get the list of `contracts` that include a specific `thingy` and a specific `gizmo`
-* `get /gizmos/{gizmoId}/thingies/{thingyId}/contracts` ~ Get the list of `contracts` that include a specific `gizmo` and a specific `thingy`
-* `get /contracts/{contractId}/thingies` ~ Get the list of `thingies` that are included in a specific `contract`
-* `get /contracts/{contractId}/gizmos` ~ Get the list of `gizmos` that are included in a specific `contract`
-* `put /thingies/{thingyId}` ~ Update a specific `thingy` using a complete/full representation
-* `patch /thingies/{thingyId}` ~ Update a specific `thingy` using a partial representation
-* `put /gizmos/{gizmoId}` ~ Update a specific `thingy` using a complete/full representation
-* `patch /gizmos/{gizmoId}` ~ Update a specific `thingy` using a partial representation
-* `put /contracts/{contractId}` ~ Update a specific `contract` using a complete/full representation
-* `patch /contracts/{contractId}` ~ Update a specific `contract` using a partial representation
-* `delete /thingies/{thingyId}` ~ Delete a specific `thingy`
-* `delete /gizmos/{gizmoId}` ~ Delete a specific `gizmo`
-* `delete /contracts/{contractId}` ~ Delete a specific `contract`
+* `post /thingies` creates a `thingy`
+* `post /gizmos` creates a `gizmo`
+* `post /thingies/{thingyId}/gizmos/{gizmoId}/contracts` creates a `contract` between a specific `thingy` and a specific `gizmo`
+* `post /gizmos/{gizmoId}/thingies/{thingyId}/contracts` creates a `contract` between a specific `gizmo` and a specific `thingy`
+* `get /thingies` lists all `thingies`
+* `get /thingies/{thingyId}` gets the details of a specific `thingy`
+* `get /gizmos` lists all `gizmos`
+* `get /gizmos/{gizmoId}` gets the details of a specific `gizmo`
+* `get /contracts` lists all `contracts`
+* `get /contracts/{contractId}` gets the details of a specific `contract`
+* `get /thingies/{thingyId}/contracts` lists the `contracts` that include a specific `thingy`
+* `get /gizmos/{gizmoId}/contracts` lists the `contracts` that include a specific `gizmo`
+* `get /contracts/{contractId}/thingies` lists the `thingies` that are included in a specific `contract`
+* `get /contracts/{contractId}/gizmos` lists the `gizmos` that are included in a specific `contract`
+* `get /thingies/{thingyId}/gizmos/{gizmoId}/contracts` lists the `contracts` that include a specific `thingy` and a specific `gizmo`
+* `get /gizmos/{gizmoId}/thingies/{thingyId}/contracts` lists the `contracts` that include a specific `gizmo` and a specific `thingy`
+* `put /thingies/{thingyId}` updates a specific `thingy` using a full representation
+* `patch /thingies/{thingyId}` updates a specific `thingy` using a partial representation
+* `put /gizmos/{gizmoId}` updates a specific `gizmo` using a full representation
+* `patch /gizmos/{gizmoId}` updates a specific `gizmo` using a partial representation
+* `put /contracts/{contractId}` updates a specific `contract` between a `thingy` and a `gizmo` using a complete/full representation
+* `patch /contracts/{contractId}` updates a specific `contract` between a `thingy` and a `gizmo` using a partial representation
+* `delete /thingies/{thingyId}` deletes a specific `thingy`
+* `delete /gizmos/{gizmoId}` deletes a specific `gizmo`
+* `delete /contracts/{contractId}` deletes a specific `contract`
