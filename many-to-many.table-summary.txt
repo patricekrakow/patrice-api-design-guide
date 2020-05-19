@@ -1,0 +1,30 @@
+post /thingies                               post /thingies                                          post /thingies
+post /gizmos                                 post /gizmos                                            post /gizmos
+post /thingies/{thingyId}/gizmos
+post /gizmos/{gizmoId}/thingies
+post /thingies/{thingyId}/gizmos/{gizmoId}   post /thingies/{thingyId}/gizmos/{gizmoId}/relation     post /thingies/{thingyId}/gizmos/{gizmoId}/contracts
+post /gizmos/{gizmoId}/thingies/{thingyId}   post /gizmos/{gizmoId}/thingies/{thingyId}/relation     post /gizmos/{gizmoId}/thingies/{thingyId}/contracts
+get /thingies                                get /thingies                                           get /thingies
+get /thingies/{thingyId}                     get /thingies/{thingyId}                                get /thingies/{thingyId}
+get /gizmos                                  get /gizmos                                             get /gizmos
+get /gizmos/{gizmoId}                        get /gizmos/{gizmoId}                                   get /gizmos/{gizmoId}
+                                                                                                     get /contracts
+                                                                                                     get /contracts/{contractId}
+                                                                                                     get /thingies/{thingyId}/contracts
+                                                                                                     get /gizmos/{gizmoId}/contracts
+get /thingies/{thingyId}/gizmos              get /thingies/{thingyId}/gizmos                         get /contracts/{contractId}/gizmos
+get /gizmos/{gizmoId}/thingies               get /gizmos/{gizmoId}/thingies                          get /contracts/{contractId}/thingies
+                                             get /thingies/{thingyId}/gizmos/{gizmoId}/relation      get /thingies/{thingyId}/gizmos/{gizmoId}/contracts
+                                             get /gizmos/{gizmoId}/thingies/{thingyId}/relation      get /gizmos/{gizmoId}/thingies/{thingyId}/contracts
+put /thingies/{thingyId}                     put /thingies/{thingyId}                                put /thingies/{thingyId}
+patch /thingies/{thingyId}                   patch /thingies/{thingyId}                              patch /thingies/{thingyId}
+put /gizmos/{gizmoId}                        put /gizmos/{gizmoId}                                   put /gizmos/{gizmoId}
+patch /gizmos/{gizmoId}                      patch /gizmos/{gizmoId}                                 patch /gizmos/{gizmoId}
+                                             put /thingies/{thingyId}/gizmos/{gizmoId}/relation      put /contracts/{contractId}
+                                             put /gizmos/{gizmoId}/thingies/{thingyId}/relation
+                                             patch /thingies/{thingyId}/gizmos/{gizmoId}/relation    patch /contracts/{contractId}
+                                             patch /gizmos/{gizmoId}/thingies/{thingyId}/relation
+delete /thingies/{thingyId}                  delete /thingies/{thingyId}                             delete /thingies/{thingyId}
+delete /gizmos/{gizmoId}                     delete /gizmos/{gizmoId}                                delete /gizmos/{gizmoId}
+delete /thingies/{thingyId}/gizmos/{gizmoId} delete /thingies/{thingyId}/gizmos/{gizmoId}/relation   delete /contracts/{contractId}
+delete /gizmos/{gizmoId}/thingies/{thingyId} delete /gizmos/{gizmoId}/thingies/{thingyId}/relation
