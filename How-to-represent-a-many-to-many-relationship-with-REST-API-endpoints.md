@@ -2,7 +2,7 @@
 
 ### One Implicit Single Relation
 
-Let's say that we have the two concept `thingy` and `gizmo` that have one implicit single **many-to-many** relationship.
+Let's say that we have the two concepts `thingy` and `gizmo` that have one implicit single **many-to-many** relationship.
 
 We can start representing the **_reading side_** of such a situation with the following API endpoints:
 
