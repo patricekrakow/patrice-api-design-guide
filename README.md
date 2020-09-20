@@ -1,2 +1,3 @@
-# api-design-guidelines
-API Design Guidelines | Let's start by sharing a few ideas in a unstructured way ;-)
+# Patrice API Design Guide
+
+[Patrice API Design Guide](patrice-api-design-guide.md)
