@@ -2,7 +2,7 @@
 
 ## 1. Abstract
 
-This document reflects a personal view of how the ideal web API design might look like.
+This document reflects a personal view of how the ideal web API design should look like.
 
 ## 2. What is an API?
 
