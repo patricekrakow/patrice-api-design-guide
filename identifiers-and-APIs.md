@@ -329,7 +329,7 @@ GET  /thingies/{thingyId} | READ   | idempotent
 >   "name": "bar"
 >   "description": "happy fermi"
 > }
-< 201 Created
+< 200 OK
 < 
 < {
 <   "id": "60ec9e6f-5980-4143-8482-2ac7ed326a19",
@@ -337,8 +337,6 @@ GET  /thingies/{thingyId} | READ   | idempotent
 <   "description": "happy fermi"
 < }
 ```
-
-_**QUESTION:**_ Must the response of this second (idempotent) insert also report `201 Created`, or could/should/must it report `200 OK` to communicate that the resource with the _identifier_ `60ec9e6f-5980-4143-8482-2ac7ed326a19` was already existing?
 
 <details>
 <summary>list & read(s)</summary>
@@ -478,7 +476,7 @@ GET  /thingies/{thingyId} | READ   | idempotent
 >   "name": "bar"
 >   "description": "happy fermi"
 > }
-< 200 OK
+< 201 Created
 < 
 < {
 <   "id": "60ec9e6f-5980-4143-8482-2ac7ed326a19",
@@ -486,8 +484,6 @@ GET  /thingies/{thingyId} | READ   | idempotent
 <   "description": "happy fermi"
 < }
 ```
-
-_**QUESTION:**_ Must the response of this first (idempotent) upsert report `200 OK` like the subsequent calls, or could/should/must it report `201 Created` to communicate that the resource with the _identifier_ `60ec9e6f-5980-4143-8482-2ac7ed326a19` has been actually created (i.e. did not exist before)?
 
 <details>
 <summary>list & read(s)</summary>
@@ -782,7 +778,7 @@ GET  /thingies/{thingyId} | READ   | idempotent
 >   "name": "bar"
 >   "description": "happy fermi"
 > }
-< 201 Created
+< 200 OK
 < 
 < {
 <   "id": "60ec9e6f-5980-4143-8482-2ac7ed326a19",
@@ -790,8 +786,6 @@ GET  /thingies/{thingyId} | READ   | idempotent
 <   "description": "happy fermi"
 < }
 ```
-
-_**QUESTION:**_ Must the response of this second (idempotent) insert also report `201 Created`, or could/should/must it report `200 OK` to communicate that the resource with the _identifier_ `60ec9e6f-5980-4143-8482-2ac7ed326a19` was already existing?
 
 <details>
 <summary>list & read(s)</summary>
@@ -1100,7 +1094,7 @@ GET  /thingies/{thingyId} | READ   | idempotent
 >   "name": "bar"
 >   "description": "happy fermi"
 > }
-< 200 OK
+< 201 Created
 < 
 < {
 <   "id": "60ec9e6f-5980-4143-8482-2ac7ed326a19",
@@ -1108,8 +1102,6 @@ GET  /thingies/{thingyId} | READ   | idempotent
 <   "description": "happy fermi"
 < }
 ```
-
-_**QUESTION:**_ Must the response of this first (idempotent) upsert report `200 OK` like the subsequent calls, or could/should/must it report `201 Created` to communicate that the resource with the _identifier_ `60ec9e6f-5980-4143-8482-2ac7ed326a19` has been actually created (i.e. did not exist before)?
 
 <details>
 <summary>list & read(s)</summary>
