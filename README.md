@@ -2,4 +2,4 @@
 
 [Patrice API Design Guide](patrice-api-design-guide.md)
 
-[Why Resources MUST be Immutable](why-resources-must-be-immutable.md)
+[Why Resources SHOULD be Immutable](why-resources-should-be-immutable.md)
